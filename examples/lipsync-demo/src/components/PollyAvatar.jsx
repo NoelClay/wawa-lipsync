@@ -13,7 +13,7 @@ import { VISEMES } from "wawa-lipsync";
 
 let setupMode = false;
 
-export function PollyAvatar({ viseme, ...props }) {
+export function PollyAvatar({ viseme, amplitude = 0, ...props }) {
   const { nodes, materials, scene } = useGLTF(
     "/models/64f1a714fe61576b46f27ca2.glb"
   );
@@ -40,7 +40,7 @@ export function PollyAvatar({ viseme, ...props }) {
     return () => actions[animation]?.fadeOut(0.5);
   }, [animation]);
 
-  const lerpMorphTarget = (target, value, speed = 0.1) => {
+  const lerpMorphTarget = (target, value, speed = 0.3) => {
     scene.traverse((child) => {
       if (child.isSkinnedMesh && child.morphTargetDictionary) {
         const index = child.morphTargetDictionary[target];
@@ -80,13 +80,24 @@ export function PollyAvatar({ viseme, ...props }) {
       return;
     }
 
-    lerpMorphTarget(viseme, 1, 0.2);
+    // 기본 입 모양을 위한 최소 강도와 오디오 볼륨에 따른 동적 강도를 결합합니다.
+    const baseInfluence = 0.6; // 소리가 작을 때도 최소한의 입 모양을 보장합니다.
+    const dynamicInfluence = amplitude * 1.0; // amplitude에 따른 추가적인 강도입니다.
+    const targetInfluence = THREE.MathUtils.clamp(
+      baseInfluence + dynamicInfluence,
+      0,
+      3.0 // 최대값을 1.5로 제한하여 너무 과장되지 않게 합니다.
+    );
 
+    // 현재 viseme에 계산된 influence를 적용합니다.
+    lerpMorphTarget(viseme, targetInfluence, 0.2);
+
+    // ���성 viseme이 아닌 다른 모든 viseme의 influence는 0으로 되돌립니다.
     Object.values(VISEMES).forEach((value) => {
       if (viseme === value) {
         return;
       }
-      lerpMorphTarget(value, 0, 0.1);
+      lerpMorphTarget(value, 0, 0.2);
     });
   });
 
