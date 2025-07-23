@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 import { useControls } from "leva";
 import * as THREE from "three";
 import { VISEMES } from "wawa-lipsync";
+import devLog from "../utils/devLog";
 
 let setupMode = false;
 
@@ -32,6 +33,29 @@ export function PollyAvatar({ viseme, amplitude = 0, ...props }) {
   const [animation, setAnimation] = useState(
     animations.find((a) => a.name === "Idle") ? "Idle" : animations[0].name // Check if Idle animation exists otherwise use first animation
   );
+
+  useEffect(() => {
+    devLog(
+      "PollyAvatar Animation Mapping",
+      {
+        "Model Nodes (Skeleton)": nodes,
+        "Loaded Animations": animations,
+        "Playable Actions": actions,
+      },
+      "info"
+    );
+    devLog(
+      "Morph Target Data (from Wolf3D_Head)",
+      {
+        "Available Morph Targets (Dictionary)":
+          nodes.Wolf3D_Head.morphTargetDictionary,
+        "Initial Morph Target Influences (Values)":
+          nodes.Wolf3D_Head.morphTargetInfluences,
+      },
+      "info"
+    );
+  }, [nodes, animations, actions]);
+
   useEffect(() => {
     actions[animation]
       ?.reset()

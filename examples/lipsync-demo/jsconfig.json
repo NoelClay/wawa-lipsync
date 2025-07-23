@@ -1,7 +1,13 @@
 {
   "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
     "paths": {
       "wawa-lipsync": ["../../packages/wawa-lipsync/src"]
-    }
-  }
+    },
+    "types": ["vite/client"]
+  },
+  "include": ["src"]
 }
