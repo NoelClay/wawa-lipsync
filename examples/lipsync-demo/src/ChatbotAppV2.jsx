@@ -5,27 +5,63 @@ import { PollyExperience } from "./components/PollyExperience";
 import { HybridPlayer } from "./components/HybridPlayer"; // HybridPlayer import
 import { VISEMES } from "wawa-lipsync";
 
-// Polly Viseme을 wawa-lipsync VISEMES로 매핑하는 테이블
+// Polly Viseme을 wawa-lipsync VISEMES로 매핑하는 개선된 테이블
 const pollyToWawaVisemeMap = {
+  // --- 자음 (Consonants) ---
+  // 입술을 닫는 소리
   'p': VISEMES.PP, 'b': VISEMES.PP, 'm': VISEMES.PP,
-  't': VISEMES.DD, 'd': VISEMES.DD, 'n': VISEMES.DD,
+
+  // 혀끝을 윗잇몸에 대는 소리
+  't': VISEMES.DD, 'd': VISEMES.DD,
+
+  // 혀끝을 윗잇몸에 대는 비음/설측음 (개선된 매핑)
+  'n': VISEMES.nn, 'l': VISEMES.nn,
+
+  // 목구멍 안쪽에서 내는 소리
   'k': VISEMES.kk, 'g': VISEMES.kk, 'h': VISEMES.kk, 'N': VISEMES.kk,
+
+  // 윗니와 아랫입술을 사용하는 소리
   'f': VISEMES.FF, 'v': VISEMES.FF,
+
+  // 혀를 이 사이에 넣는 소리
   'T': VISEMES.TH, 'D': VISEMES.TH,
+
+  // 혀와 잇몸의 마찰 소리
   's': VISEMES.SS, 'z': VISEMES.SS,
-  'S': VISEMES.CH, 'dZ': VISEMES.CH, 'tS': VISEMES.CH, 'Z': VISEMES.CH,
-  'l': VISEMES.nn,
-  'r': VISEMES.RR, 'r': VISEMES.RR,
-  'a': VISEMES.aa, 'A': VISEMES.aa, '@': VISEMES.aa, '{': VISEMES.aa, 'aI': VISEMES.aa, 'aU': VISEMES.aa,
-  'e': VISEMES.E,  'E': VISEMES.E,  'V': VISEMES.E, 'eI': VISEMES.E, '3`': VISEMES.E,
+
+  // 혀를 입천장에 넓게 대는 소리
+  'S': VISEMES.CH, 'Z': VISEMES.CH, 'tS': VISEMES.CH, 'dZ': VISEMES.CH,
+
+  // 혀를 말아 올리는 소리
+  'r': VISEMES.RR,
+
+  // --- 모음 (Vowels) & 반모음 (Glides) ---
+  // 입을 크게 벌리는 소리 (ah, ay, ow)
+  'a': VISEMES.aa, 'A': VISEMES.aa, '@': VISEMES.aa, 'aI': VISEMES.aa, 'aU': VISEMES.aa,
+
+  // 입을 옆으로 벌리는 소리 (eh, ae)
+  'e': VISEMES.E,  'E': VISEMES.E,  'V': VISEMES.E,
+
+  // 입을 좁게 벌리는 소리 (ee, ih, y)
   'i': VISEMES.I,  'I': VISEMES.I, 'j': VISEMES.I,
+
+  // 입술을 둥글게 모으는 소리 (oh, oy)
   'o': VISEMES.O,  'O': VISEMES.O, 'oU': VISEMES.O, 'OI': VISEMES.O,
+
+  // 입술을 앞으로 내미는 소리 (oo, uh, w)
   'u': VISEMES.U,  'U': VISEMES.U, 'w': VISEMES.U,
+
+  // --- 기타 ---
+  // 무음
   'sil': VISEMES.sil,
-  // X-SAMPA에만 있는 일부 값 추가
+
+  // 일부 X-SAMPA 값 호환성 유지
+  // 참고: 아래 값들은 표준 Polly 음소는 아니지만, 호환성을 위해 유지할 수 있습니다.
+  '{': VISEMES.aa, // 'cat'의 'a'와 유사
+  'eI': VISEMES.E,  // 'say'의 'ei'
+  '3`': VISEMES.E, // 'nurse'의 'ur'
   '@`': VISEMES.aa,
 };
-
 function ChatbotAppV2() {
   const [viseme, setViseme] = useState(VISEMES.sil);
   const [amplitude, setAmplitude] = useState(0); // amplitude 상태 추가
